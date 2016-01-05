@@ -1,0 +1,36 @@
+/* Settify mixin for SASS. */
+/* Version 1.1 - 2016.01.04. */
+/* Author: Zsolt Pentz - github.com/pentzzsolt */
+/* License: CC0 1.0 Universal (Public Domain) */
+
+@mixin settify($selector, $properties...) {
+	@for $i from 1 through (length($sets)) {
+		@if $i == 1 {
+			@for $j from 1 through length(nth($sets, $i)) {
+				&:nth-#{$selector}(#{$j}) {
+					@each $property in $properties {
+						#{$property}: nth(nth($sets, $i), $j);
+					}
+				}
+			}
+		}
+		@else {
+			@for $j from 1 through length(nth($sets, $i)) {
+				@if $j == 1 {
+					&:nth-last-#{$selector}(-n+#{length(nth($sets, $i))}):first-#{$selector} {
+						@each $property in $properties {
+							#{$property}: nth(nth($sets, $i), $j);
+						}
+					}
+				}
+				@else {
+					&:nth-last-#{$selector}(-n+#{length(nth($sets, $i))}):first-#{$selector} ~ #{nth(nth(&, 1), length(nth(&, 1)))}:nth-#{$selector}(#{$j}) {
+						@each $property in $properties {
+							#{$property}: nth(nth($sets, $i), $j);
+						}
+					}
+				}
+			}
+		}
+	}
+}
